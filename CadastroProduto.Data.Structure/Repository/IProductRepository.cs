@@ -1,5 +1,6 @@
 ﻿using CadastroProduto.Library.Entities;
 using CadastroProduto.Library.Models;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,5 +15,7 @@ namespace CadastroProduto.Data.Structure.Repository
         Task CreateProductAsync(Product product, CancellationToken ct);
 
         Task<Product> DeleteProductAsync(Product product, CancellationToken ct);
+
+        Task<Product> GetProductByIdAsync(Guid productId, CancellationToken ct);
     }
 }
