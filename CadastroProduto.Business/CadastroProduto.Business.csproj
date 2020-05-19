@@ -8,4 +8,9 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CadastroProduto.Data.Structure\CadastroProduto.Data.Structure.csproj" />
+    <ProjectReference Include="..\CadastroProduto.Library\CadastroProduto.Library.csproj" />
+  </ItemGroup>
+
 </Project>

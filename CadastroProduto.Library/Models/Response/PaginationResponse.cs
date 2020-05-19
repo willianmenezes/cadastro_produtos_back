@@ -4,12 +4,12 @@ namespace CadastroProduto.Library.Models.Response
 {
     public class PaginationResponse<TEntity>
     {
-        public int TotalPaginas { get; set; }
+        public int TotalPages { get; set; }
 
-        public int IndicePagina { get; set; }
+        public int PageIndex { get; set; }
 
-        public int TotalItens { get; set; }
+        public int TotalItems { get; set; }
 
-        public List<TEntity> Itens { get; set; }
+        public List<TEntity> Items { get; set; }
     }
 }

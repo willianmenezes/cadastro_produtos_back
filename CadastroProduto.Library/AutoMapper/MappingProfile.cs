@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using CadastroProduto.Library.Entities;
+using CadastroProduto.Library.Models.Response;
 
 namespace CadastroProduto.Library.AutoMapper
 {
@@ -6,7 +8,7 @@ namespace CadastroProduto.Library.AutoMapper
     {
         public MappingProfile()
         {
-            //CreateMap<Entity, Destity>();
+            CreateMap<Product, ProductResponse>();
         }
     }
 }
