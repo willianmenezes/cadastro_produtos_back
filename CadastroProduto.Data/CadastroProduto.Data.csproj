@@ -5,16 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Context\" />
-    <Folder Include="DistributedTransaction\" />
-    <Folder Include="EntityTypeConfiguration\" />
-    <Folder Include="Scripts\" />
-    <Folder Include="Repository\" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.4" />
+    <ProjectReference Include="..\CadastroProduto.Data.Structure\CadastroProduto.Data.Structure.csproj" />
+    <ProjectReference Include="..\CadastroProduto.Library\CadastroProduto.Library.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,37 +1,54 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
+using CadastroProduto.Business.Services;
+using CadastroProduto.Business.Services.Interfaces;
+using CadastroProduto.Data.Context;
+using CadastroProduto.Data.Repository;
+using CadastroProduto.Data.Structure.Repository;
+using CadastroProduto.Library.AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
 
 namespace CadastroProdutos
 {
+    /// <summary>
+    /// Class Startup
+    /// </summary>
     public class Startup
     {
 
         private const string DefaultCorsPolicy = "DefaultCorsPolicy";
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="configuration"></param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
+        /// <summary>
+        /// Configuration properties for application
+        /// </summary>
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// Method to Configure services
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<EntityContext>(options => options.UseSqlServer(Configuration.GetConnectionString("default")));
+
             services.AddMvc(opt =>
             {
                 opt.EnableEndpointRouting = false;
@@ -41,49 +58,35 @@ namespace CadastroProdutos
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-            services.AddControllers();
-
             ConfigureSwagger(services);
             ConfigureCors(services);
+            ConfigureBusinessServices(services);
+            ConfigureRepository(services);
+            ConfigureAutoMapper(services);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        private void ConfigureAutoMapper(IServiceCollection services)
         {
-            if (env.IsDevelopment())
+            var mappingConfig = new MapperConfiguration(mc =>
             {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseHsts();
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseCors(DefaultCorsPolicy);
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
+                mc.AddProfile(new MappingProfile());
             });
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                        name: "default",
-                        template: "/api/{culture}/{controller}/{action}/{id?}");
-            });
+            mappingConfig.CompileMappings();
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("../swagger/v1/swagger.json", "CadastroProdutos");
-            });
+            IMapper mapper = mappingConfig.CreateMapper();
+
+            services.AddSingleton(mapper);
+        }
+
+        private void ConfigureRepository(IServiceCollection services)
+        {
+            services.AddScoped<IProductRepository, ProductRepository>();
+        }
+
+        private void ConfigureBusinessServices(IServiceCollection services)
+        {
+            services.AddScoped<IProductService, ProductService>();
         }
 
         private void ConfigureSwagger(IServiceCollection services)
@@ -116,6 +119,42 @@ namespace CadastroProdutos
                     builder.AllowAnyMethod();
                     builder.AllowAnyOrigin();
                 });
+            });
+        }
+
+        /// <summary>
+        /// Method to configure properties
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseCors(DefaultCorsPolicy);
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("../swagger/v1/swagger.json", "CadastroProdutos");
             });
         }
     }
