@@ -9,9 +9,9 @@ namespace CadastroProduto.Data.Structure.Repository
     {
         Task<PagedQueries<Product>> GetAllProductsPaginatedAsync(int pageIndex, int pageSize, string nameFilter, int price, CancellationToken ct);
 
-        Task<Product> EditProductAsync(Product product, CancellationToken ct);
+        Task EditProductAsync(Product product, CancellationToken ct);
 
-        Task<Product> CreateProductAsync(Product product, CancellationToken ct);
+        Task CreateProductAsync(Product product, CancellationToken ct);
 
         Task<Product> DeleteProductAsync(Product product, CancellationToken ct);
     }

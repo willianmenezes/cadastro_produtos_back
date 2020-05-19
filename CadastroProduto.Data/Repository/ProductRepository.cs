@@ -4,9 +4,7 @@ using CadastroProduto.Library.Entities;
 using CadastroProduto.Library.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,19 +14,36 @@ namespace CadastroProduto.Data.Repository
     {
         public ProductRepository(EntityContext context) : base(context) { }
 
-        public Task<Product> CreateProductAsync(Product product, CancellationToken ct)
+        public async Task CreateProductAsync(Product product, CancellationToken ct)
         {
-            throw new NotImplementedException();
+            using (var scope = CreateTransactionScopeWithIsolationLevel())
+            {
+                await _context.Product.AddAsync(product, ct);
+
+                await _context.SaveChangesAsync();
+
+                scope.Complete();
+            }
         }
 
-        public Task<Product> DeleteProductAsync(Product product, CancellationToken ct)
+        public async Task<Product> DeleteProductAsync(Product product, CancellationToken ct)
         {
-            throw new NotImplementedException();
+            using (var scope = CreateTransactionScopeWithIsolationLevel())
+            {
+                return null;
+
+                scope.Complete();
+            }
         }
 
-        public Task<Product> EditProductAsync(Product product, CancellationToken ct)
+        public async Task EditProductAsync(Product product, CancellationToken ct)
         {
-            throw new NotImplementedException();
+            using (var scope = CreateTransactionScopeWithIsolationLevel())
+            {
+               
+
+                scope.Complete();
+            }
         }
 
         public async Task<PagedQueries<Product>> GetAllProductsPaginatedAsync(int pageIndex, int pageSize, string nameFilter, int price, CancellationToken ct)
