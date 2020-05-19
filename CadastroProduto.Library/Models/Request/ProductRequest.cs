@@ -20,7 +20,7 @@ namespace CadastroProduto.Library.Models.Request
         [MinLength(10, ErrorMessage = "O caminho da imagem deve ser maior que 10 caracteres")]
         public string UrlImage { get; set; }
 
-        public Product ConvertToEntity()
+        public virtual Product ConvertToEntity()
         {
             return new Product
             {

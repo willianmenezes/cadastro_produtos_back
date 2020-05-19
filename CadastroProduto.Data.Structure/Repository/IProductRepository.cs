@@ -14,7 +14,7 @@ namespace CadastroProduto.Data.Structure.Repository
 
         Task CreateProductAsync(Product product, CancellationToken ct);
 
-        Task<Product> DeleteProductAsync(Product product, CancellationToken ct);
+        Task DeleteProductAsync(Guid productId, CancellationToken ct);
 
         Task<Product> GetProductByIdAsync(Guid productId, CancellationToken ct);
     }

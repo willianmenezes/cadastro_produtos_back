@@ -33,19 +33,17 @@ namespace CadastroProduto.Data.Repository
             }
         }
 
-        public async Task<Product> DeleteProductAsync(Product product, CancellationToken ct)
+        public async Task DeleteProductAsync(Guid productId, CancellationToken ct)
         {
             using (var scope = CreateTransactionScopeWithIsolationLevel())
             {
-                var productRegistred = await _context.Product.FirstOrDefaultAsync(x => x.ProductId.Equals(product.ProductId), ct);
+                var productRegistred = await _context.Product.FirstOrDefaultAsync(x => x.ProductId.Equals(productId), ct);
 
                 _context.Remove(productRegistred);
 
                 await _context.SaveChangesAsync(ct);
 
                 scope.Complete();
-
-                return product;
             }
         }
 
@@ -101,7 +99,7 @@ namespace CadastroProduto.Data.Repository
         {
             try
             {
-                return await _context.Product.FirstOrDefaultAsync(x => x.ProductId.Equals(productId), ct);
+                return await _context.Product.AsNoTracking().FirstOrDefaultAsync(x => x.ProductId.Equals(productId), ct);
             }
             catch (Exception ex)
             {
