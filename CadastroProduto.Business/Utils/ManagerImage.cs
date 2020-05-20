@@ -68,7 +68,13 @@ namespace CadastroProduto.Business.Utils
 
             fileName = $"{Guid.NewGuid()}.{extension}";
 
+            if (!Directory.Exists(Directory.GetCurrentDirectory() + "/images-products"))
+            {
+                DirectoryInfo di = Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/images-products");
+            }
+
             var path = Path.Combine(Directory.GetCurrentDirectory(), "images-products", fileName);
+           
 
             using (var stream = new FileStream(path, FileMode.Create))
             {
