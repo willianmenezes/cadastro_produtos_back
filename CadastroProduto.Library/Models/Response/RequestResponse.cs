@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CadastroProduto.Library.Models.Response
+﻿namespace CadastroProduto.Library.Models.Response
 {
     public class RequestResponse
     {

@@ -15,7 +15,7 @@ namespace CadastroProdutos.Api.Controllers
     /// </summary>
     [Route("api/[Controller]")]
     [ApiController]
-    public class ProdutosController : ControllerBase
+    public class ProductsController : ControllerBase
     {
 
         private readonly IProductService _productService;
@@ -26,7 +26,7 @@ namespace CadastroProdutos.Api.Controllers
         /// </summary>
         /// <param name="productService"></param>
         /// <param name="mapper"></param>
-        public ProdutosController(IProductService productService, IMapper mapper)
+        public ProductsController(IProductService productService, IMapper mapper)
         {
             _productService = productService;
             _mapper = mapper;
@@ -78,7 +78,7 @@ namespace CadastroProdutos.Api.Controllers
         [ProducesResponseType(400, Type = typeof(Exception))]
         [ProducesResponseType(404, Type = typeof(Exception))]
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterProductAsync([FromBody] ProductRequest request, CancellationToken ct)
+        public async Task<IActionResult> RegisterProductAsync([FromForm] ProductRequest request, CancellationToken ct)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace CadastroProdutos.Api.Controllers
         [ProducesResponseType(400, Type = typeof(Exception))]
         [ProducesResponseType(404, Type = typeof(Exception))]
         [HttpPut]
-        public async Task<IActionResult> EditProductAsync([FromBody] EditProductRequest request, CancellationToken ct)
+        public async Task<IActionResult> EditProductAsync([FromForm] EditProductRequest request, CancellationToken ct)
         {
             try
             {

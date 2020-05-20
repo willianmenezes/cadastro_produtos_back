@@ -60,6 +60,8 @@ namespace CadastroProduto.Data.Repository
                     productRegistred.UrlImage = product.UrlImage;
                     productRegistred.Updated = DateTime.UtcNow;
 
+                    await _context.SaveChangesAsync(ct);
+
                     scope.Complete();
                 }
             }

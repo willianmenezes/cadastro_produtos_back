@@ -9,12 +9,13 @@ using CadastroProduto.Library.Models.Request;
 using CadastroProduto.Library.Models.Response;
 using CadastroProduto.Data.Structure.Repository;
 using CadastroProduto.Business.Services.Interfaces;
+using CadastroProduto.Business.Utils;
 
 namespace CadastroProduto.Business.Services
 {
     public class ProductService : IProductService
     {
-        
+
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
 
@@ -28,12 +29,15 @@ namespace CadastroProduto.Business.Services
         {
             request.Validate();
 
+            var pathImage = await ManagerImage.SaveFileAsync(request.File);
+
             if (request.Price == 0)
             {
                 throw new Exception("O preço do produto não pode ser R$0,00");
             }
 
             var product = request.ConvertToEntity();
+            product.UrlImage = pathImage;
             product.Validate();
 
             await _productRepository.CreateProductAsync(product, ct);
@@ -61,6 +65,8 @@ namespace CadastroProduto.Business.Services
             }
 
             await _productRepository.DeleteProductAsync(productId, ct);
+
+            ManagerImage.DeleteFile(product.UrlImage);
         }
 
         public async Task EditProductAsync(EditProductRequest request, CancellationToken ct)
@@ -73,13 +79,22 @@ namespace CadastroProduto.Business.Services
             }
 
             var product = request.ConvertToEntity();
-            product.Validate();
-
             var productregistred = await _productRepository.GetProductByIdAsync(product.ProductId, ct);
 
             if (productregistred == null || productregistred.ProductId == Guid.Empty)
             {
                 throw new Exception("Produto não encotrado para o ID fornecido");
+            }
+
+            if (request.File != null)
+            {
+                var urlImage = await ManagerImage.SaveFileAsync(request.File);
+                product.UrlImage = urlImage;
+                ManagerImage.DeleteFile(productregistred.UrlImage);
+            }
+            else
+            {
+                product.UrlImage = productregistred.UrlImage;
             }
 
             await _productRepository.EditProductAsync(product, ct);
@@ -92,7 +107,14 @@ namespace CadastroProduto.Business.Services
             request.pageIndex = request.pageIndex == 0 ? 1 : request.pageIndex;
             request.pageSize = request.pageSize == 0 ? 10 : request.pageSize;
 
-            return await _productRepository.GetAllProductsPaginatedAsync(request.pageIndex, request.pageSize, request.nameFilter, request.price, ct);
+            var pagedQueries = await _productRepository.GetAllProductsPaginatedAsync(request.pageIndex, request.pageSize, request.nameFilter, request.price, ct);
+
+            foreach (var product in pagedQueries)
+            {
+                product.UrlImage = await ManagerImage.GetFileAsync(product.UrlImage);
+            }
+
+            return pagedQueries;
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using CadastroProduto.Library.Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,15 +12,15 @@ namespace CadastroProduto.Library.Models.Request
         [Required(AllowEmptyStrings = false, ErrorMessage = "O campo nome é obrigatório")]
         [MaxLength(200, ErrorMessage = "O nome do produto deve ser menor que 200 caracteres")]
         [MinLength(3, ErrorMessage = "O nome do produto deve ser maior que 3 caracteres")]
+        [FromForm(Name = "name")]
         public string Name { get; set; }
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "O campo preço é obrigatório")]
+        [FromForm(Name = "price")]
         public double Price { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "O campo imagem é obrigatório")]
-        [MaxLength(1000, ErrorMessage = "O caminho da imagem é maior que do o permitido")]
-        [MinLength(10, ErrorMessage = "O caminho da imagem deve ser maior que 10 caracteres")]
-        public string UrlImage { get; set; }
+        [FromForm(Name = "file")]
+        public IFormFile File { get; set; }
 
         public virtual Product ConvertToEntity()
         {
@@ -28,8 +30,7 @@ namespace CadastroProduto.Library.Models.Request
                 Updated = DateTime.UtcNow,
                 Status = true,
                 Name = Name.Trim(),
-                Price = Price,
-                UrlImage = UrlImage.Trim()
+                Price = Price / 100.0
             };
         }
     }
